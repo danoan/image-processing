@@ -2,7 +2,6 @@ import sys, getopt
 
 import numpy as np
 from scipy import misc
-import matplotlib.pyplot as plt
 
 def forward_differences(u):
 	'''

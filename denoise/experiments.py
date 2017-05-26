@@ -22,18 +22,20 @@ def experiment_1(imgFile,outputDir):
 	if not os.path.exists(diff_dir):
 		os.makedirs(diff_dir)
 
-	rof_instances = [ 	{'lbda':1,'error_tol':1e-4,'max_it':200,'max_alpha_it':20,'print_output':False},
-						{'lbda':0.5,'error_tol':1e-4,'max_it':200,'max_alpha_it':20,'print_output':False},
-						#{'lbda':0.1,'error_tol':1e-4,'max_it':200,'max_alpha_it':20,'print_output':False},
-						#{'lbda':0.05,'error_tol':1e-4,'max_it':200,'max_alpha_it':20,'print_output':False},
-						#{'lbda':0.01,'error_tol':1e-4,'max_it':200,'max_alpha_it':20,'print_output':False}
+	rof_instances = [ 	{'lbda':1,'error_tol':1e-4,'max_it':1000,'max_alpha_it':20,'print_output':False},
+						{'lbda':0.5,'error_tol':1e-4,'max_it':1000,'max_alpha_it':20,'print_output':False},
+						{'lbda':0.1,'error_tol':1e-4,'max_it':1000,'max_alpha_it':20,'print_output':False},
+						{'lbda':0.05,'error_tol':1e-4,'max_it':1000,'max_alpha_it':20,'print_output':False},
+						{'lbda':0.01,'error_tol':1e-4,'max_it':1000,'max_alpha_it':20,'print_output':False},
+						{'lbda':0.005,'error_tol':1e-4,'max_it':1000,'max_alpha_it':20,'print_output':False}
 					]	
 
-	chamb_instances = [ {'lbda':1,'error_tol':1e-4,'max_it':200,'print_output':False},
-						{'lbda':0.5,'error_tol':1e-4,'max_it':200,'print_output':False},
-						#{'lbda':0.1,'error_tol':1e-4,'max_it':200,'max_alpha_it':20,'print_output':False},
-						#{'lbda':0.05,'error_tol':1e-4,'max_it':200,'max_alpha_it':20,'print_output':False},
-						#{'lbda':0.01,'error_tol':1e-4,'max_it':200,'max_alpha_it':20,'print_output':False}
+	chamb_instances = [ {'lbda':1,'error_tol':1e-4,'max_it':1000,'print_output':False},
+						{'lbda':2,'error_tol':1e-4,'max_it':1000,'print_output':False},
+						{'lbda':10,'error_tol':1e-4,'max_it':1000,'print_output':False},
+						{'lbda':20,'error_tol':1e-4,'max_it':1000,'print_output':False},
+						{'lbda':40,'error_tol':1e-4,'max_it':1000,'print_output':False},
+						{'lbda':80,'error_tol':1e-4,'max_it':1000,'print_output':False}
 					  ]						
 
 	counter = 0
@@ -56,14 +58,15 @@ def experiment_1(imgFile,outputDir):
 def main(argv):
 	try:
 		img_file,outputDir,experiment = argv
-		if experiment=="1":
-			experiment_1(img_file,outputDir)
-		else:
-			cprint(RED,"Experiment does not exist.")		
 	except:
 		cprint("denoise-experiments.py ",UNDERLINE,"IMG_FILE",RESET, "   ", UNDERLINE, "OUTPUT_DIR", RESET, "   ", UNDERLINE, "EXPERIMENT_NUMBER")
 		cprint("\nRuns experiment ",UNDERLINE,"EXPERIMENT_NUMBER",RESET," on file ",UNDERLINE,"IMG_FILE", RESET, " and outputs results in ",UNDERLINE,"OUTPUT_DIR")
-		
+		return
+
+	if experiment=="1":
+		experiment_1(img_file,outputDir)
+	else:
+		cprint(RED,"Experiment does not exist.")				
 
 if __name__=="__main__":
 	main(sys.argv[1:])

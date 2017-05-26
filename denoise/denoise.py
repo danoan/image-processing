@@ -46,7 +46,7 @@ def main(argv):
 		dimg = rof.denoise_image(input_img,lbda,error_tol,max_it,max_alpha_it)	
 
 	plt.imshow(dimg,cmap="gray")
-	if not os.path.exists(output_img):
+	if not os.path.exists(os.path.dirname(output_img)):
 		os.makedirs(os.path.dirname(output_img))
 	plt.savefig(output_img)			
 
