@@ -21,65 +21,50 @@ def compute_level_line(img,gray_level):
 
     return uls_boundary
 
-def test_draw_level_set():
-    img_file = "img/gradient.png"
+def test_draw_level_set(img_file,level):
     img = misc.imread(img_file)
 
-    uls = compute_upper_level_set(img,115)	
+    uls = compute_upper_level_set(img,level)	
     img[uls] = 0
     img[np.invert(uls)] = 255
 
     plt.imshow(img,cmap="gray")
     plt.show()
 
-def test_draw_level_line():
-    img_file = "img/lena_256.png"
-    img = misc.imread(img_file)	
 
-    level_line = compute_level_line(img,150)
-    img[level_line] = 0
-    img[np.invert(level_line)] = 255
-
-    plt.imshow(img,cmap="gray")
-    plt.show()	
-
-def test_draw_five_level_lines():
-    img_file = "img/gradient.png"
+def test_draw_level_lines(img_file,levels):
     img = misc.imread(img_file)
 
-    l1=compute_level_line(img,130)
-    l2=compute_level_line(img,145)
-    l3=compute_level_line(img,160)
-    l4=compute_level_line(img,175)
-    l5=compute_level_line(img,190)
+    level_lines = [ compute_level_line(img,level) for level in levels]
 
-    img[l1] = 0; img[np.invert(l1)] = 255
-    img[l2] = 0
-    img[l3] = 0
-    img[l4] = 0
-    img[l5] = 0
+    img[ level_lines[0] ] = 0; img[np.invert( level_lines[0] )] = 255
+    for ll in level_lines[1:]:
+        img[ll] = 0
 
     plt.imshow(img,cmap="gray")
     plt.show()
 
-def test_intersection_level_lines():
-    img_file = "img/gradient.png"
-    # img_file = "img/lena_256.png"
+def test_intersection_level_lines(img_file,l1=None,l2=None):
     img = misc.imread(img_file)
 
-    gl1,gl2 = random.sample( range(256),2 )
+    if l1 is None or l2 is None:
+        l1,l2 = random.sample( range(256),2 )
 
-    ll1=compute_level_line(img,130)
-    ll2=compute_level_line(img,131)
 
-    print( gl1,gl2,np.logical_and( img[ll1]==0, img[ll2]==0 ).any() )
+    ll1=compute_level_line(img,l1)
+    ll2=compute_level_line(img,l2)
+
+    print( l1,l2,np.logical_and( img[ll1]==0, img[ll2]==0 ).any() )
 
 
 def main():
-    # test_draw_level_set()
-    # test_draw_level_line()
-    test_draw_five_level_lines()
-    # test_intersection_level_lines()
+    img_gradient = "img/gradient.png"    
+    img_lena = "img/lena_256.png"    
+
+    # test_draw_level_set(img_lena,100)
+    # test_draw_level_line(img_lena,100)
+    test_draw_level_lines(img_lena,[100,200])
+    # test_intersection_level_lines(img_lena)
 
 if __name__=='__main__':
     main()

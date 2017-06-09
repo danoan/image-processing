@@ -23,21 +23,20 @@ def intersect_region_level_line(region_extended_boundary,level_line):
 
     return level_line
 
-def test_intersection():
-    # img_file = "img/lena_256.png"
-    img_file = "img/gradient.png"
+def test_intersection(img_file,rect=None,levels=None):
     img = misc.imread(img_file)	
 
-    levels = [i*5 for i in range(50)]
+    if levels is None:
+        levels = [i*5 for i in range(50)]
+
+    if rect is None:
+        rect = RR.RectangularRegion( (50,50), (50,70), (70,70), (70,50) )
+
     level_lines = []
     for l in levels:
-        level_line = LL.compute_level_line(img,l)	
-        level_lines.append(level_line)
+        level_line = LL.compute_level_line(img,l)   
+        level_lines.append(level_line)        
 
-    rect = RR.RectangularRegion( (50,50), (50,70), (70,70), (70,50) )
-
-    # img[level_line] = 0
-    # img[np.invert(level_line)] = 255	
 
     img[rect.extended_boundary[:,1],rect.extended_boundary[:,0]] = 200	
 
@@ -50,7 +49,10 @@ def test_intersection():
     plt.show()
 
 def main():
-    test_intersection()
+    img_gradient = "img/gradient.png"    
+    img_lena = "img/lena_256.png"      
+    
+    test_intersection(img_lena)
 
 if __name__=='__main__':
     main()    

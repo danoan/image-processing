@@ -93,20 +93,21 @@ def draw_connections(img,connections,tjoints_list):
 				last_line = fill_in_colors(img,tj_open,tj_close,last_line)	
 
 
-def test_draw_connections():
-    # img_file = "img/lena_256.png"
-    img_file = "img/gradient.png"
+def test_draw_connections(img_file,rect=None,levels=None):
     img = misc.imread(img_file) 
-
-    level_line = LL.compute_level_line(img,120)
     
-    rect = RR.RectangularRegion( (50,50), (50,70), (70,70), (70,50) )
-    # rect = RR.RectangularRegion( (30,30), (30,50), (50,50), (50,30) )
+    if rect is None:
+        rect = RR.RectangularRegion( (50,50), (50,70), (70,70), (70,50) )
+
+    if levels is None:
+        levels = [ 1*i for i in range(0,256) ]        
+
+
     grid = HI.region_to_half_grid(rect)
     extended_grid = HI.add_level_information(img,grid)
 
     tjoints_grid = {}
-    levels = [ 1*i for i in range(0,255) ]    
+    
     for level in levels:
         level_line = LL.compute_level_line(img,level)
         level_intersection = RI.intersect_region_level_line( rect.extended_boundary,level_line)
@@ -130,14 +131,17 @@ def test_draw_connections():
     plt.imshow(img,cmap='gray')
     plt.show()    
 
-def test_paint_lines():
-    img_file = "img/gradient.png"
+def test_paint_lines(img_file,lines=None,rect=None):
     img = misc.imread(img_file)     
 
-    rect = RR.RectangularRegion( (50,50), (50,70), (70,70), (70,50) )
-    img[rect.closure[:,1],rect.closure[:,0]] = 255
+    if rect is None:
+        rect = RR.RectangularRegion( (50,50), (50,70), (70,70), (70,50) )
+
+    if lines is None:
+        lines = [ [52,71,55,71,107],[60,71,63,71,154],[59,71,64,71,143],[50,71,66,71,102],[49,51,67,71,102],[70,71,71,71,104],[69,71,71,70,104],[71,67,71,66,100],[71,68,71,65,109],[68,71,71,63,105],[71,62,71,59,108],[49,50,71,58,105],[49,50,71,57,105],[71,53,71,52,103],[65,49,64,49,122] ]
     
-    lines = [ [52,71,55,71,107],[60,71,63,71,154],[59,71,64,71,143],[50,71,66,71,102],[49,51,67,71,102],[70,71,71,71,104],[69,71,71,70,104],[71,67,71,66,100],[71,68,71,65,109],[68,71,71,63,105],[71,62,71,59,108],[49,50,71,58,105],[49,50,71,57,105],[71,53,71,52,103],[65,49,64,49,122] ]
+    img[rect.closure[:,1],rect.closure[:,0]] = 255
+        
     colors = np.linspace(0,180,len(lines))
     for i,line in enumerate(lines):
         paint_line(img,line[0],line[1],line[2],line[3],colors[i])
@@ -147,8 +151,10 @@ def test_paint_lines():
 
 
 def main():
-    test_draw_connections()
-    # test_paint_lines()
+    img_gradient = "img/gradient.png"    
+    img_lena = "img/lena_256.png"     
+    test_draw_connections(img_lena)
+    # test_paint_lines(img_lena)
 
 if __name__=='__main__':
     main()

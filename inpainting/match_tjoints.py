@@ -83,18 +83,21 @@ def match_tjoints_pairs(tjoints_list):
 
     return connections
 
-def test_match():
-    img_file = "img/lena_256.png"
+def test_match(img_file,rect=None,levels=None):
     img = misc.imread(img_file) 
 
-    level_line = LL.compute_level_line(img,120)
-    
-    rect = RR.RectangularRegion( (50,50), (50,70), (70,70), (70,50) )
+    if rect is None:
+        rect = RR.RectangularRegion( (50,50), (50,70), (70,70), (70,50) )
+
+    if levels is None:
+        levels = [ 5*i for i in range(0,51) ]   
+
+
     grid = HI.region_to_half_grid(rect)
     extended_grid = HI.add_level_information(img,grid)
 
     tjoints_grid = {}
-    levels = [ 15*i for i in range(0,18) ]    
+     
     for level in levels:
         level_line = LL.compute_level_line(img,level)
         level_intersection = RI.intersect_region_level_line( rect.extended_boundary,level_line)
@@ -115,7 +118,9 @@ def test_match():
 
 
 def main():
-    test_match()
+    img_gradient = "img/gradient.png"    
+    img_lena = "img/lena_256.png"     
+    test_match(img_lena)
 
 if __name__=='__main__':
     main()

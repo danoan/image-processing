@@ -67,28 +67,31 @@ def counterclockwise_rectangular_boundary(p0,p1,p2,p3):
     return np.array( boundary_points, dtype='int64' )
 
 
-def test_paint_boundary():
-    img_file = "img/lena_256.png"
+def test_paint_boundary(img_file,rect=None):
     img = misc.imread(img_file)     
-    rect = RectangularRegion( (50,50), (50,70), (70,70), (70,50) )
+
+    if rect is None:
+        rect = RectangularRegion( (50,50), (50,70), (70,70), (70,50) )
 
     img[rect.boundary[:,1],rect.boundary[:,0]] = 255
     plt.imshow(img,cmap="gray")
     plt.show()
 
-def test_paint_closure():
-    img_file = "img/lena_256.png"
+def test_paint_closure(img_file,rect=None):    
     img = misc.imread(img_file)     
-    rect = RectangularRegion( (50,50), (50,70), (70,70), (70,50) )
+
+    if rect is None:
+        rect = RectangularRegion( (50,50), (50,70), (70,70), (70,50) )
 
     img[rect.closure[:,1],rect.closure[:,0]] = 255
     plt.imshow(img,cmap="gray")
     plt.show()
 
-def test_paint_extended_boundary():
-    img_file = "img/lena_256.png"
+def test_paint_extended_boundary(img_file,rect=None):
     img = misc.imread(img_file)     
-    rect = RectangularRegion( (50,50), (50,70), (70,70), (70,50) )
+
+    if rect is None:
+        rect = RectangularRegion( (50,50), (50,70), (70,70), (70,50) )
 
     img[rect.closure[:,1],rect.closure[:,0]] = 255
     img[rect.extended_boundary[:,1],rect.extended_boundary[:,0]] = 200
@@ -102,9 +105,11 @@ def test_compute_directions():
             print(k)
 
 def main():
-    # test_paint_boundary()
-    # test_paint_closure()
-    # test_paint_extended_boundary()
+    img_gradient = "img/gradient.png"    
+    img_lena = "img/lena_256.png"      
+    # test_paint_boundary(img_lena)
+    # test_paint_closure(img_lena)
+    # test_paint_extended_boundary(img_lena)
     test_compute_directions()
 
 if __name__=='__main__':

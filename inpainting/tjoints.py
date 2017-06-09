@@ -46,40 +46,20 @@ def create_intermediate_levels(tjoints):
     return tjoints
 
 
-def test_tjoints():
-    img_file = "img/lena_256.png"
+def test_tjoints_levels(img_file,rect=None,levels=None):
     img = misc.imread(img_file) 
 
-    level_line = LL.compute_level_line(img,120)
-    rect = RR.RectangularRegion( (50,50), (50,70), (70,70), (70,50) )
+    if rect is None:
+        rect = RR.RectangularRegion( (50,50), (50,70), (70,70), (70,50) )            
 
-    level_intersection = RI.intersect_region_level_line( rect.extended_boundary,level_line)
+    if levels is None:
+        levels = [ 5*i for i in range(0,51) ]    
 
-    grid = HI.region_to_half_grid(rect)
-    extended_grid = HI.add_level_information(img,grid)
-    
-    tjoints_grid = compute_level_tjoints(extended_grid,level_intersection)
-
-    x=[];y=[]
-    for k,v in tjoints_grid.items():
-        x.append( k[0] )
-        y.append( k[1] )
-    
-    plt.plot(x,y,'bo')
-    plt.show()
-
-def test_all_levels():
-    # img_file = "img/lena_256.png"
-    img_file = "img/gradient.png"
-    img = misc.imread(img_file) 
-
-    rect = RR.RectangularRegion( (50,50), (50,70), (70,70), (70,50) )            
     grid = HI.region_to_half_grid(rect)
     extended_grid = HI.add_level_information(img,grid)
 
     tjoints_grid = {}
-
-    levels = [ 5*i for i in range(0,51) ]    
+    
     for level in levels:
         level_line = LL.compute_level_line(img,level)
         level_intersection = RI.intersect_region_level_line( rect.extended_boundary,level_line)
@@ -97,14 +77,14 @@ def test_all_levels():
     plt.plot(x,y,'bo')
     plt.show()    
 
-def test_intermediate_levels():
-    # img_file = "img/lena_256.png"
-    img_file = "img/gradient.png"
+def test_intermediate_levels(img_file,level,rect=None):
     img = misc.imread(img_file) 
 
-    level_line = LL.compute_level_line(img,120)
+    if rect is None:
+        rect = RR.RectangularRegion( (50,50), (50,70), (70,70), (70,50) )
+
+    level_line = LL.compute_level_line(img,level)
     
-    rect = RR.RectangularRegion( (50,50), (50,70), (70,70), (70,50) )
     grid = HI.region_to_half_grid(rect)
     extended_grid = HI.add_level_information(img,grid)
 
@@ -116,17 +96,19 @@ def test_intermediate_levels():
     for k,v in extended_tjoints.items():
         print(v["levels"])
 
-def test_all_intermediate_levels():
-    # img_file = "img/lena_256.png"
-    img_file = "img/gradient.png"
+def test_all_intermediate_levels(img_file,rect=None,levels=None):
     img = misc.imread(img_file) 
    
-    rect = RR.RectangularRegion( (50,50), (50,70), (70,70), (70,50) )
+    if rect is None:
+        rect = RR.RectangularRegion( (50,50), (50,70), (70,70), (70,50) )
+
+    if levels is None:
+        levels = [ 5*i for i in range(0,51) ]            
+
     grid = HI.region_to_half_grid(rect)
     extended_grid = HI.add_level_information(img,grid)
 
-    tjoints_grid = {}
-    levels = [ 5*i for i in range(0,51) ]    
+    tjoints_grid = {}    
     for level in levels:
         level_line = LL.compute_level_line(img,level)
         level_intersection = RI.intersect_region_level_line( rect.extended_boundary,level_line)
@@ -141,10 +123,11 @@ def test_all_intermediate_levels():
         print(data["grid"]," : ",data["levels"])        
 
 def main():
-    # test_tjoints()
-    # test_all_levels()
-    # test_intermediate_levels()
-    test_all_intermediate_levels()
+    img_gradient = "img/gradient.png"    
+    img_lena = "img/lena_256.png"     
+    # test_all_levels(img_lena)
+    # test_intermediate_levels(img_lena,120)
+    test_all_intermediate_levels(img_lena)
 
 if __name__=='__main__':
     main()

@@ -127,8 +127,10 @@ def add_level_information(img,grid):
 
     return grid
 
-def test_region_grid():
-    rect = RR.RectangularRegion( (50,50), (50,70), (70,70), (70,50) )
+def test_region_grid(rect=None):
+    if rect is None:
+        rect = RR.RectangularRegion( (50,50), (50,70), (70,70), (70,50) )
+
     grid = region_to_half_grid(rect)
 
     x = [ k[0] for k in grid.keys() ]
@@ -137,10 +139,11 @@ def test_region_grid():
     plt.plot(x,y,'ro')
     plt.show()
 
-def test_directions():
-    rect = RR.RectangularRegion( (50,50), (50,70), (70,70), (70,50) )
+def test_directions(rect=None):
+    if rect is None:
+        rect = RR.RectangularRegion( (50,50), (50,70), (70,70), (70,50) )
+
     grid = region_to_half_grid(rect)  
-    # print(grid)
 
     x = [ k[0] for k in grid.keys() ]
     y = [ k[1] for k in grid.keys() ]
