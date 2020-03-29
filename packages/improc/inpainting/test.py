@@ -1,4 +1,4 @@
-from masnou import *
+from all import *
 
 occlusion = [(50,50),(50,70),(70,70),(70,50)]
 level_lines = [40,70,85,100,115,130,160]

@@ -1,8 +1,8 @@
-import os,sys,getopt
+import os,sys
 import matplotlib.pyplot as plt
 
-import rof,chambolle
-from TerminalColors import *
+import packages.denoise.rof, packages.denoise.chambolle
+from ext.TerminalColors import *
 
 def save_img(img,fname):
 	plt.imshow(img,cmap="gray")
@@ -41,11 +41,11 @@ def experiment_1(imgFile,outputDir):
 	counter = 0
 	for rof_inst,chamb_inst in zip(rof_instances,chamb_instances):
 		fname = os.path.join(rof_dir,"%s_%d.png" % (imgName,counter) )
-		dimg_rof = rof.denoise_image(imgFile,**rof_inst)
+		dimg_rof = packages.denoise.rof.denoise_image(imgFile, **rof_inst)
 		save_img(dimg_rof,fname)
 
 		fname = os.path.join(chamb_dir,"%s_%d.png" % (imgName,counter) )
-		dimg_chamb = chambolle.denoise_image(imgFile,**chamb_inst)
+		dimg_chamb = packages.denoise.chambolle.denoise_image(imgFile, **chamb_inst)
 		save_img(dimg_chamb,fname)		
 
 		fname = os.path.join(diff_dir,"%s_%d.png" % (imgName,counter) )

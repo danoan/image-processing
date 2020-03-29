@@ -1,23 +1,23 @@
 Implementation of classical algorithms on image processing.
 
-# Denoise Package:
+# Denoise package:
+* tikhonov.py: Tikhonov regularization.
 * rof.py:	ROF model implementation for image denoising.
 * chambolle.py: Chambolle's algorithm implementation for image denoising.
-* denoise.py: Denoise image tool.
+* fista.py: Fista algorithm implementation for image denoising.
 
-	denoise.py INPUT_IMG OUTPUT_IMG -a [algorithm] -l [lambda] -i [maxIt] -e [errorTolerance]
+	denoise.py INPUT_IMG ALGORITHM -l [lambda] -i [maxIt] -e [tolerance]
 
-	-a, Algorithm to be used (rof,chambolle).
+	-a, Algorithm to be used (tikhonov,rof,chambolle,fista).
 
-	-l, Smoothness level (1.0).
+	-l, Smoothness strength.
 
-	-i, Maximum number of iterations (200).
+	-i, Maximum number of iterations.
 
-	-e, Error tolerance stop condition (1e-4). 
+	-e, Stop condition tolerance. 
 
-* experiments.py: Comparison between algorithms.
-
-	experiments.py INPUT_IMG OUTPUT_DIR EXPERIMENT_NUMBER
+# Inpainting package
+To be done.
 
 # Dependencies:
 1. scipy, numpy, matplotlib
@@ -26,5 +26,6 @@ Implementation of classical algorithms on image processing.
 1. TerminalColors: https://github.com/dennishafemann/python-TerminalColors
 
 # References
-1.	Nonlinear total variation based noise removal algorithms. Rudin,Osher,Fatemi.
-1.	An algorithm for total variation mimimization and applications. Chambolle.
+1.	Nonlinear total variation based noise removal algorithms. Leonid I. Rudin; Stanley Osher; Emad Fatemi.
+1.	An algorithm for total variation mimimization and applications. Antonin Chambolle.
+1.	A fast iterative shrinkage-thresholding algorithm for linear inverse problems. Amir Beck; Marc Teboulle.
