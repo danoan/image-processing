@@ -35,34 +35,50 @@ def make3channel(img):
 		img = _img
 	return img
 
-def main():
-	id = read_input()
+def set_plot_no_axes():
+	plt.gca().set_axis_off()
+	plt.subplots_adjust(top = 1, bottom = 0, right = 1, left = 0, 
+		    hspace = 0, wspace = 0)
+	plt.margins(0,0)
+	plt.gca().xaxis.set_major_locator(plt.NullLocator())
+	plt.gca().yaxis.set_major_locator(plt.NullLocator())
 
-	noisy_img = np.asfarray( misc.imread(id.input_image) )
+def main():
+	inp = read_input()
+
+	noisy_img = np.asfarray( misc.imread(inp.input_image) )
 	noisy_img /= 255.0
 	noisy_img = make3channel(noisy_img)
+	
+	if inp.max_iterations<0:
+		inp.max_iterations=1e10
 
 
-	if id.algorithm=="chambolle":
-		dimg = chambolle.denoise_image(noisy_img, id.lbda, id.tolerance, id.max_iterations,id.verbose)
-	elif id.algorithm=="rof":
-		dimg = rof.denoise_image(noisy_img, id.lbda, id.tolerance, id.max_iterations, id.verbose)
-	elif id.algorithm=="fista":
-		dimg = fista.denoise_image(noisy_img, id.lbda, id.max_iterations)
-	elif id.algorithm=="tikhonov":
-		dimg = tikhonov.denoise_image(noisy_img, id.lbda, id.max_iterations,id.verbose)
+	if inp.algorithm=="chambolle":
+		dimg = chambolle.denoise_image(noisy_img, inp.lbda, inp.tolerance, inp.max_iterations,inp.verbose)
+	elif inp.algorithm=="rof":
+		dimg = rof.denoise_image(noisy_img, inp.lbda, inp.tolerance, inp.max_iterations, inp.verbose)
+	elif inp.algorithm=="fista":
+		dimg = fista.denoise_image(noisy_img, inp.lbda, inp.max_iterations)
+	elif inp.algorithm=="tikhonov":
+		dimg = tikhonov.denoise_image(noisy_img, inp.lbda, inp.max_iterations,inp.verbose)
 
-	fig,axs=plt.subplots(1,2)
-	axNoisy,axDenoise = axs
+	if inp.output_image is not None:
+		dirname = os.path.dirname(inp.output_image)
+		if not os.path.exists(os.path.dirname(inp.output_image)):
+			os.makedirs(dirname)
+		set_plot_no_axes()
 
-	axNoisy.imshow(noisy_img)
-	axDenoise.imshow(dimg)
-	plt.show()
+		plt.imshow(dimg)
+		plt.savefig(inp.output_image,bbox_inches = 'tight',pad_inches = 0)
+	else:
+		fig,axs=plt.subplots(1,2)
+		axNoisy,axDenoise = axs
 
-	if id.output_image:
-		if not os.path.exists(os.path.dirname(id.output_img)):
-			os.makedirs(os.path.dirname(output_img))
-		axDenoise.savefig(output_img)
+		
+		axNoisy.imshow(noisy_img)
+		axDenoise.imshow(dimg)
+		plt.show()
 
 
 if __name__=="__main__":
