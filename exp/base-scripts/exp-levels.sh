@@ -8,14 +8,23 @@ EV_STOP_SEQUENCE="$2"
 LEVELS="$3"
 BASE_OUTPUT_FOLDER="$4"
 FLOW="$5" #heat tv curvature
+LAMBDA=$6
 
 IMAGE_NAME=$(basename $INPUT_IMAGE)
 NUM_RUNS=$( wc -w <<< $EV_STOP_SEQUENCE )
+NUM_RUNS=$(( $NUM_RUNS-1 ))
 
 LEVELS_SCRIPT="${PROJECT_PATH}/packages/improc/utils/graph_img_levels.py"
 FLOW_SCRIPT=""
 OUTPUT_FOLDER=""
 ARGS=""
+
+if [ "$LAMBDA" == "" ]
+then
+	LAMBDA=0
+fi
+echo $LAMBDA
+
 if [ "$FLOW" == "heat" ]
 then
 	FLOW_SCRIPT="${PROJECT_PATH}/packages/improc/utils/heat_equation.py"
@@ -24,12 +33,12 @@ then
 elif [ "$FLOW" == "tv" ]
 then
 	FLOW_SCRIPT="${PROJECT_PATH}/denoise.py"
-	ARGS="rof -i-1 -l0 -t1e-10"
+	ARGS="rof -i-1 -l$LAMBDA -t1e-10"
 	OUTPUT_FOLDER="${BASE_OUTPUT_FOLDER}/levels/tv/$IMAGE_NAME"
 elif [ "$FLOW" == "curvature" ]
 then
 	FLOW_SCRIPT="${PROJECT_PATH}/denoise.py"
-	ARGS="rof_curvature -i-1 -l0 -t1e-10"
+	ARGS="rof_curvature -i-1 -l$LAMBDA -t1e-10"
 	OUTPUT_FOLDER="${BASE_OUTPUT_FOLDER}/levels/curvature/$IMAGE_NAME"
 else
 	echo "Unknown flow"
