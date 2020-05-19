@@ -97,8 +97,6 @@ def gradient_descent(w,lbda,error_tol=1e-4,max_it=1000,
 	for i in range(0,max_alpha_it):
 		alpha_list[i] = alpha_list[i-1]*0.5
 
-	alpha_list=[0.1]
-
 	while ( np.abs(tv - tv_0) > error_tol and it_main < max_it):
 		if ev_stop is not None:
 			if tv <= ev_stop:

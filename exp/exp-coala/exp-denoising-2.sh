@@ -21,5 +21,5 @@ echo "Executing Fista"
 python3 ${DENOISE_APP} ${INPUT_IMAGE} fista -i540 -l0.25 -o ${OUTPUT_FOLDER}/coala-fista.jpg -v
 
 echo "Executing ROF_curvature"
-python3 ${DENOISE_APP} ${INPUT_IMAGE} rof_curvature -i-1 -t0.001 -l1.0 -o ${OUTPUT_FOLDER}/coala-rof-curvature.jpg -v
+python3 ${DENOISE_APP} ${INPUT_IMAGE} rof_curvature -i-1 -t0.001 -l0.1 -o ${OUTPUT_FOLDER}/coala-rof-curvature-01.jpg -v
 
