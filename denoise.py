@@ -8,7 +8,7 @@ import numpy as np
 from scipy import misc
 
 import matplotlib.pyplot as plt
-from improc.denoise import chambolle,rof,tikhonov,fista
+from improc.denoise import chambolle,rof,tikhonov,fista,rof_modified_curvature
 
 def read_input():
 	parser = argparse.ArgumentParser(description="Denoising tools")
@@ -18,6 +18,7 @@ def read_input():
 
 	parser.add_argument("-l",dest="lbda",type=float,action="store",default=0.12,help="Regularization weight.")
 	parser.add_argument("-t",dest="tolerance",type=float,action="store",default=1e-5,help="Stop if the new energy value differs of less than [tolerance].")
+	parser.add_argument("-e",dest="ev_stop",type=float,action="store",default=None,help="Stop if energy reaches this value.")
 	parser.add_argument("-i",dest="max_iterations",type=int,action="store",default=100,help="Stop after the i-th iteration.")
 	parser.add_argument("-o",dest="output_image",type=str,action="store",help="Output image filepath.")
 	parser.add_argument("-v",dest="verbose",action="store_true",help="Print algorithms outputs.")
@@ -57,11 +58,13 @@ def main():
 	if inp.algorithm=="chambolle":
 		dimg = chambolle.denoise_image(noisy_img, inp.lbda, inp.tolerance, inp.max_iterations,inp.verbose)
 	elif inp.algorithm=="rof":
-		dimg = rof.denoise_image(noisy_img, inp.lbda, inp.tolerance, inp.max_iterations, inp.verbose)
+		dimg = rof.denoise_image(noisy_img, inp.lbda, inp.tolerance, inp.max_iterations, inp.verbose,inp.ev_stop)
 	elif inp.algorithm=="fista":
 		dimg = fista.denoise_image(noisy_img, inp.lbda, inp.max_iterations)
 	elif inp.algorithm=="tikhonov":
 		dimg = tikhonov.denoise_image(noisy_img, inp.lbda, inp.max_iterations,inp.verbose)
+	elif inp.algorithm=="rof_curvature":
+		dimg = rof_modified_curvature.denoise_image(noisy_img, inp.lbda,inp.tolerance, inp.max_iterations,inp.verbose,inp.ev_stop)
 
 	if inp.output_image is not None:
 		dirname = os.path.dirname(inp.output_image)

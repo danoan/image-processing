@@ -27,6 +27,7 @@ def read_input():
 	parser.add_argument("-l",dest="lbda",type=float,action="store",default=0.12,help="Regularization weight.")
 	parser.add_argument("-s",dest="step",type=float,action="store",default=0.1,help="Time step.")
 	parser.add_argument("-t",dest="tolerance",type=float,action="store",default=1e-5,help="Stop if the new energy value differs of less than [tolerance].")
+	parser.add_argument("-e",dest="ev_stop",type=float,action="store",default=None,help="Stop energy equal this value.")
 	parser.add_argument("-i",dest="max_iterations",type=int,action="store",default=100,help="Stop after the i-th iteration.")
 	parser.add_argument("-o",dest="output_image",type=str,action="store",help="Output image filepath.")
 	parser.add_argument("-v",dest="verbose",action="store_true",help="Print algorithms outputs.")
@@ -51,15 +52,18 @@ def flow(u,step,lbda,epsilon):
 
 def compute_gradient_square_norm(u):
 	#return | grad u |^2
-	du=np.zeros(u.shape)
-	du[0:-1,:] += ( u[1:,:] - u[0:-1,:] )
-	du[:,0:-1] += ( u[:,1:] - u[:,0:-1] )
+	dux=np.zeros(u.shape)
+	duy=np.zeros(u.shape)
 
-	return np.sum(du**2)
+	dux[0:-1,:] += ( u[1:,:] - u[0:-1,:] )
+	duy[:,0:-1] += ( u[:,1:] - u[:,0:-1] )
+
+	return np.sum(dux**2 + duy**2)
 
 def main():
 	inp = read_input()
-	u=np.array( img_as_ubyte( imread(inp.input_image,as_gray=True) ),dtype=np.float32 )
+	#u=np.array( img_as_ubyte( imread(inp.input_image,as_gray=True) ),dtype=np.float32 )
+	u=np.array( imread(inp.input_image,as_gray=True),dtype=np.float32 )
 
 	print("Initial energy: ", compute_gradient_square_norm(u))
 
@@ -72,7 +76,10 @@ def main():
 		nit+=1
 		if nit%1==0:
 			if inp.verbose:
-				print(nit,":",sdiff)
+				print(nit,":",sdiff,compute_gradient_square_norm(u))
+
+		if inp.ev_stop is not None and compute_gradient_square_norm(u) <= inp.ev_stop:
+			break
 		
 		if inp.max_iterations>=0 and nit>inp.max_iterations:
 			break

@@ -5,6 +5,8 @@ import numpy as np
 from skimage.io import imread
 
 import matplotlib.pyplot as plt
+from matplotlib import cm
+from mpl_toolkits.mplot3d import Axes3D
 
 def set_plot_no_axes():
 	plt.gca().set_axis_off()
@@ -19,33 +21,43 @@ def read_input():
 
 	parser.add_argument("input_image",type=str,action="store",help="Image to be denoised.")
 	parser.add_argument("output_image",type=str,action="store",help="Output image filepath.")
-
-	parser.add_argument("-y",type=int,action="store",default=0,help="Image row to graph.")
+	parser.add_argument("-l",dest="levels",type=int,nargs='*',default=[], action="store",help="List of levels to plot.")
+	parser.add_argument("-c",dest="colors",type=str,nargs='*',action="store",help="Level set color sequence.")
 
 
 	args = parser.parse_args()
 	return args
 
-def graph_img_line(image_filepath, row ,output_filepath):
+def graph_img_plot(image_filepath, output_filepath,levels=[],colors=None):
 	img = imread(image_filepath,as_gray=True)
+	
+	levels = [ i/255.0 for i in levels ]
 
 	h,w = img.shape
-	x=list(range(w))
-	y=[ img[row,x] for x in range(w)]
+	X=np.arange(0,w,1)
+	Y=np.arange(0,h,1)
+	X,Y = np.meshgrid(X,Y)
+	Z=img
+
+	fig,ax = plt.subplots()
+	plt.gca().invert_yaxis()
+
+	if colors is None:
+		ax.contour(X,Y,Z,levels,cmap=cm.viridis)
+	else:
+		ax.contour(X,Y,Z,levels,colors=colors)
 
 	dirname = os.path.dirname(output_filepath)
 	if not os.path.exists(os.path.dirname(output_filepath)):
 		os.makedirs(dirname)
 
-	#set_plot_no_axes()
-	plt.axes().set_ylim(0,1)
-	plt.plot(x,y)
+	set_plot_no_axes()
 	plt.savefig(output_filepath,bbox_inches = 'tight',pad_inches = 1)	
 
 
 def main():
 	inp = read_input()
-	graph_img_line(inp.input_image,inp.y,inp.output_image)
+	graph_img_plot(inp.input_image,inp.output_image,inp.levels,inp.colors)
 
 		
 

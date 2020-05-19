@@ -56,10 +56,10 @@ def compute_gradient(u0,u,lbda):
 	y_den=0
 	gy= np.zeros( DD.shape )
 	for c in range(DD.nchannels):
-		x_den += (DD.fx(c)**2 + minmod(DD.fy(c),DD.by(c))**2)**0.5 + avoid_div_zero
+		x_den = (DD.fx(c)**2 + minmod(DD.fy(c),DD.by(c))**2 + avoid_div_zero)**0.5 
 		gx[:,:,c] = FD.backward_differences( DD.fx(c)/x_den )[1]
 
-		y_den += ( DD.fy(c)**2 + minmod(DD.fx(c),DD.bx(c))**2 + avoid_div_zero)**0.5
+		y_den = (DD.fy(c)**2 + minmod(DD.fx(c),DD.bx(c))**2 + avoid_div_zero)**0.5
 		gy[:,:,c] = FD.backward_differences( DD.fy(c)/y_den)[0]
 
 	return ( gx + gy - lbda*(u-u0) )
@@ -77,7 +77,7 @@ def compute_tv(u):
 	return tv
 
 def gradient_descent(w,lbda,error_tol=1e-4,max_it=1000,
-					max_alpha_it=10,min_grad_rate=0.5,min_grad_step=1.0,print_output=False):
+					max_alpha_it=20,min_grad_rate=0.5,min_grad_step=1.0,print_output=False,ev_stop=None):
 	'''
 		lbda: Smoothness level of final image
 		error_tol: Method stops after difference between two last iterations equal this value
@@ -94,7 +94,11 @@ def gradient_descent(w,lbda,error_tol=1e-4,max_it=1000,
 	for i in range(0,max_alpha_it):
 		alpha_list[i] = alpha_list[i-1]*0.5
 
+
 	while ( np.abs(tv - tv_0) > error_tol and it_main < max_it):
+		if ev_stop is not None:
+			if tv <= ev_stop:
+				break
 		g = compute_gradient(w,u,lbda)
 		gsum = np.sum(g)
 
@@ -105,7 +109,7 @@ def gradient_descent(w,lbda,error_tol=1e-4,max_it=1000,
 			u = u0 + d
 
 			tv = compute_tv(u)
-			if ( (tv-tv_0) < alpha*gsum ):
+			if ( (tv-tv_0) < 0.1*alpha*gsum ):
 				break
 		if print_output:
 			print("it: {0} ; tv0: {1:.5f}; tv: {2:.5f} ; diff: {3:.5f} ; alpha: {4:.6f}".format (it_main,tv_0,tv,tv_0-tv,alpha) )
@@ -115,10 +119,10 @@ def gradient_descent(w,lbda,error_tol=1e-4,max_it=1000,
 
 	return u
 
-def denoise_image(img,lbda,error_tol,max_it,print_output=False):
+def denoise_image(img,lbda,error_tol,max_it,print_output=False,ev_stop=None):
 	if print_output:
 		print("Executing ROF...")
-	return gradient_descent(img,lbda,error_tol,max_it,print_output=print_output)
+	return gradient_descent(img,lbda,error_tol,max_it,print_output=print_output,ev_stop=ev_stop)
 
 
 

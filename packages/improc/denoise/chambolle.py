@@ -38,7 +38,7 @@ def solve_projection(img,lbda,error_tol,max_it,print_output):
     nchannels = shape[2]
 
     g = img
-    p0 = np.zeros( (2,) + shape )
+    p=p0 = np.zeros( (2,) + shape )
     it = 1
     ONE = np.ones( shape )
 
