@@ -23,17 +23,20 @@ def read_input():
 	parser.add_argument("output_image",type=str,action="store",help="Output image filepath.")
 	parser.add_argument("-l",dest="levels",type=int,nargs='*',default=[], action="store",help="List of levels to plot.")
 	parser.add_argument("-c",dest="colors",type=str,nargs='*',action="store",help="Level set color sequence.")
+	parser.add_argument("-s",dest="show",action="store_true",help="Show plot.")
+	parser.add_argument("-p",dest="padding",type=float,action="store",help="Figure padding in inches.")
 
 
 	args = parser.parse_args()
 	return args
 
-def graph_img_plot(image_filepath, output_filepath,levels=[],colors=None):
+def graph_img_plot(image_filepath, output_filepath,levels=[],colors=None,show_plot=False,padding=1):
 	img = imread(image_filepath,as_gray=True)
 	
 	levels = [ i/255.0 for i in levels ]
 
 	h,w = img.shape
+
 	X=np.arange(0,w,1)
 	Y=np.arange(0,h,1)
 	X,Y = np.meshgrid(X,Y)
@@ -52,12 +55,12 @@ def graph_img_plot(image_filepath, output_filepath,levels=[],colors=None):
 		os.makedirs(dirname)
 
 	set_plot_no_axes()
-	plt.savefig(output_filepath,bbox_inches = 'tight',pad_inches = 1)	
+	plt.savefig(output_filepath,bbox_inches = 'tight',pad_inches = padding)	
 
 
 def main():
 	inp = read_input()
-	graph_img_plot(inp.input_image,inp.output_image,inp.levels,inp.colors)
+	graph_img_plot(inp.input_image,inp.output_image,inp.levels,inp.colors,inp.show,inp.padding)
 
 		
 

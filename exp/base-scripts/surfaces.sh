@@ -13,7 +13,7 @@ for img in $(cd $INPUT_FOLDER && ls *.${FILETYPE})
 do
 	echo "$img"
 	imgname=$( basename $img )
-	python3 ${PROJECT_PATH}/packages/improc/utils/graph_img_plot.py $INPUT_FOLDER/$img ${OUTPUT_FOLDER}/$imgname
+	python3 ${PROJECT_PATH}/packages/improc/utils/graph_img_plot.py $INPUT_FOLDER/$img ${OUTPUT_FOLDER}/${imgname}.png -p0.1
 done
 
 

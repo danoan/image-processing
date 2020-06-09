@@ -22,13 +22,14 @@ def read_input():
 	parser.add_argument("input_image",type=str,action="store",help="Image to be denoised.")
 	parser.add_argument("output_image",type=str,action="store",help="Output image filepath.")
 
-	parser.add_argument("-s",dest="show",action="store_true",help="Show plot")
+	parser.add_argument("-s",dest="show",action="store_true",help="Show plot.")
+	parser.add_argument("-p",dest="padding",type=float,action="store",help="Figure padding in inches.")
 
 
 	args = parser.parse_args()
 	return args
 
-def graph_img_plot(image_filepath, output_filepath,show_plot=False):
+def graph_img_plot(image_filepath, output_filepath,show_plot=False,padding=1):
 	img = imread(image_filepath,as_gray=True)
 
 	h,w = img.shape
@@ -38,7 +39,7 @@ def graph_img_plot(image_filepath, output_filepath,show_plot=False):
 	Z=img
 
 	fig = plt.figure()
-	ax = Axes3D(fig,azim=60,elev=60)
+	ax = Axes3D(fig,azim=-240,elev=60)
 
 	ax.set_zlim(0,1)
 	ax.plot_surface(X,Y,Z,cmap=cm.viridis)
@@ -47,7 +48,7 @@ def graph_img_plot(image_filepath, output_filepath,show_plot=False):
 	if not os.path.exists(os.path.dirname(output_filepath)):
 		os.makedirs(dirname)
 
-	plt.savefig(output_filepath,bbox_inches = 'tight',pad_inches = 1)	
+	plt.savefig(output_filepath,bbox_inches = 'tight',pad_inches = padding)	
 
 	if show_plot:
 		plt.show()
@@ -56,7 +57,7 @@ def graph_img_plot(image_filepath, output_filepath,show_plot=False):
 
 def main():
 	inp = read_input()
-	graph_img_plot(inp.input_image,inp.output_image,inp.show)
+	graph_img_plot(inp.input_image,inp.output_image,inp.show,inp.padding)
 
 		
 
